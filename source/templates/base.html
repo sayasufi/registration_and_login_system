@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,6 +6,7 @@
     <title>{{ title }}</title>
 </head>
 <body>
+<a href="/"><strong>Главная страница</strong></a><br>
 {% if user.is_authenticated %}
     <a href="/profile"><strong>Профиль</strong></a>
     <form method="post" action="{% url 'logout' %}">
@@ -13,7 +15,7 @@
     </form>
 {% else %}
     <a href="/login"><strong>Войти</strong></a> <br>
-    <a href="/reg"><strong>Регистрация</strong></a>
+    <a href="/register"><strong>Регистрация</strong></a>
 {% endif %}
 
 <div class="content-text">
