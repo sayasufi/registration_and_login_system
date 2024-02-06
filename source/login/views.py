@@ -1,7 +1,8 @@
 from django.contrib.auth import logout
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseNotFound
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
+from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView
 
 from login.forms import LoginUserForm, RegisterUserForm
@@ -33,7 +34,12 @@ class RegisterUser(CreateView):
     form_class = RegisterUserForm
     template_name = "login/register.html"
     extra_context = {"title": "Регистрация"}
-    # success_url = reverse_lazy("login")
+    success_url = reverse_lazy("register_done")
+
+
+
+def register_done(request):
+    return render(request, "login/register_done.html")
 
 
 def page_not_found(request, exception):
