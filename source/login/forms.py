@@ -3,7 +3,6 @@ import datetime
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
-from django.core.exceptions import ValidationError
 
 
 class LoginUserForm(AuthenticationForm):
@@ -121,4 +120,3 @@ class UserPasswordChangeForm(PasswordChangeForm):
         if old_password and new_password2 and old_password == new_password2:
             raise forms.ValidationError("Новый пароль должен отличаться от старого.")
         return new_password2
-

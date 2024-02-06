@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, PasswordChangeView
+from django.contrib.auth.views import PasswordResetConfirmView
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
@@ -61,6 +62,25 @@ class UserPasswordChange(PasswordChangeView):
     success_url = reverse_lazy("password_change_done")
     template_name = "login/password_change_form.html"
     extra_context = {"title": "Изменение пароля"}
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = "login/password_reset_confirm.html"
+    success_url = reverse_lazy("password_reset_complete")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.validlink:
+            context["validlink"] = True
+        else:
+            context.update(
+                {
+                    "form": None,
+                    "title": "Ошибка восстановления пароля",
+                    "validlink": False,
+                }
+            )
+        return context
 
 
 def page_not_found(request, exception):

@@ -35,7 +35,7 @@ docker rm $(docker stop $(docker ps -aq))
 docker system prune --volumes --all 
 ```
 
-#### 5) Загрузить файл с переменными окружения
+#### 6) Загрузить файл с переменными окружения
 
 ```Shell
 env $(cat ../sqlite3.env | xargs) python3 manage.py createsuperuser
