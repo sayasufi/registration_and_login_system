@@ -1,11 +1,13 @@
-from django.contrib.auth import logout
+from django.conf import settings
+from django.contrib.auth import logout, get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseNotFound
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, UpdateView
 
-from login.forms import LoginUserForm, RegisterUserForm
+from login.forms import LoginUserForm, RegisterUserForm, ProfileUserForm
 
 
 class Home(ListView):
@@ -37,9 +39,21 @@ class RegisterUser(CreateView):
     success_url = reverse_lazy("register_done")
 
 
-
 def register_done(request):
     return render(request, "login/register_done.html")
+
+
+class ProfileUser(LoginRequiredMixin, UpdateView):
+    model = get_user_model()
+    form_class = ProfileUserForm
+    template_name = "login/profile.html"
+    extra_context = {'title': "Профиль пользователя", 'default_image': settings.DEFAULT_USER_IMAGE}
+
+    def get_success_url(self):
+        return reverse_lazy("profile")
+
+    def get_object(self, queryset=None):
+        return self.request.user
 
 
 def page_not_found(request, exception):

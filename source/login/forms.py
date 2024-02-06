@@ -1,3 +1,5 @@
+import datetime
+
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
@@ -51,8 +53,48 @@ class RegisterUserForm(UserCreationForm):
             "last_name": forms.TextInput(attrs={"class": "form-input"}),
         }
 
-    # def clean_email(self):
-    #     email = self.cleaned_data["email"]
-    #     if get_user_model().objects.filter(email=email).exists():
-    #         raise forms.ValidationError("Такой E-mail уже существует!")
-    #     return email
+    def clean_email(self):
+        email = self.cleaned_data["email"]
+        if not email:
+            raise forms.ValidationError("Необходимо заполнить это поле")
+        if get_user_model().objects.filter(email=email).exists():
+            raise forms.ValidationError("Такой E-mail уже существует!")
+        return email
+
+
+class ProfileUserForm(forms.ModelForm):
+    username = forms.CharField(
+        disabled=True,
+        label="Логин",
+        widget=forms.TextInput(attrs={"class": "form-input"}),
+    )
+    email = forms.CharField(
+        disabled=True,
+        label="E-mail",
+        widget=forms.TextInput(attrs={"class": "form-input"}),
+    )
+    this_year = datetime.date.today().year
+    date_birth = forms.DateField(
+        widget=forms.SelectDateWidget(
+            years=tuple(range(this_year - 100, this_year - 5))
+        )
+    )
+
+    class Meta:
+        model = get_user_model()
+        fields = [
+            "photo",
+            "username",
+            "email",
+            "date_birth",
+            "first_name",
+            "last_name",
+        ]
+        labels = {
+            "first_name": "Имя",
+            "last_name": "Фамилия",
+        }
+        widgets = {
+            "first_name": forms.TextInput(attrs={"class": "form-input"}),
+            "last_name": forms.TextInput(attrs={"class": "form-input"}),
+        }
